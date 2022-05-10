@@ -6,38 +6,52 @@
 // RELAY
 #define RELAY_ON 0    
 #define RELAY_OFF 1
-//NFC  --- quitar comentarios
-//#define RST_PIN  9    //Pin 9 para el reset del RC522
-//#define SS_PIN  10   //Pin 10 para el SS (SDA) del RC522
-//MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
+//NFC 
+#define RST_PIN  5    //Pin 5 para el reset del RC522
+#define SS_PIN  53   //Pin 53 para el SS (SDA) del RC522
+MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
+MFRC522::MIFARE_Key key;
+MFRC522::StatusCode status;
 
 //*************************** variables generales ***************************
 const int STATE_DELAY = 1000;
 int input;
+String nom = "Arduino";
 
 //************************* Variables motores *********************************
-//const int dirPin = 5;
-//const int stepPin = 6;
-//const int dirPin2 = 8;
-//const int stepPin2 = 9;
-//const int switchArriba = 3;
-//const int switchAbajo = 4;
-//const int switchBase = 7;
-//const int steps = 200;
-//int stepDelay = 10;
-//int stepDelay2 = 15;
-//int val = 0;
+const int dirPin = 9;
+const int stepPin = 6;
+const int dirPin2 = 7;
+const int stepPin2 = 8;
+const int switchArriba = 2; 
+const int switchAbajo = 3; 
+const int switchBase = 4;
+const int enableBase = 29;
+const int enableCremallera = 30;
+int stepDelay = 10;
+int stepDelay2 = 15;
+const int boton = 28;
+char compartimentos;
+int dosis = 0;
+int steps;
+int cont = 0;
+int Pdispensadas;
 
 //***************** Variables sensor de temperatura*******************************
-//int sensor = 2;
-//int ventilador1 = 3;
-//int ventilador2 = 4;
-//int temp, humedad;
-//DHT dht (sensor, DHT11);
+int sensor = 22; 
+int ventilador = 24; 
+int temp, humedad;
+DHT dht (sensor, DHT11);
 
 //Variables solenoide y switch
-int solenoide = 2;
-int switchPuerta = 3;
+int solenoide = 25; //A6
+int switchPuerta = 26; //A7
+
+//Variables alarma
+int buzzer = 27;
+int h = 0;
+char alarmas;
+
 
 //Declarar estados
 StateMachine machine = StateMachine();
@@ -58,31 +72,37 @@ State* S10 = machine.addState(&stateACPuerta);
 void setup() {
   Serial.begin(9600);
   Serial.println("Iniciando...");
-  
+
+//Inicialización del NFC -- quitar comentarios
+  SPI.begin();        //Iniciamos el Bus SPI
+  mfrc522.PCD_Init(); // Iniciamos el MFRC522
+
 // Pines para los motores
-//  pinMode(dirPin, OUTPUT);
-//  pinMode(stepPin, OUTPUT);
-//  pinMode(dirPin2, OUTPUT);
-//  pinMode(stepPin2, OUTPUT);
-//  pinMode(switchArriba, INPUT_PULLUP);
-//  pinMode(switchAbajo, INPUT_PULLUP);
-//  pinMode(switchBase, INPUT_PULLUP);
+  pinMode(dirPin, OUTPUT);
+  pinMode(stepPin, OUTPUT);
+  pinMode(dirPin2, OUTPUT);
+  pinMode(stepPin2, OUTPUT);
+  pinMode(switchBase, INPUT_PULLUP);
+  pinMode(switchArriba,INPUT_PULLUP);
+  pinMode(switchAbajo,INPUT_PULLUP);
+  pinMode(enableBase, OUTPUT);
+  pinMode(enableCremallera, OUTPUT);
+  pinMode(boton,INPUT_PULLUP);
+  digitalWrite(enableBase, LOW);
+  digitalWrite(enableCremallera, LOW);
 
 //Pines sensor de temperatura y ventiladores
-//  pinMode(ventilador1, OUTPUT);
-//  pinMode(ventilador2, OUTPUT);
-//  dht.begin();
-//  digitalWrite (ventilador1, HIGH);
-//  digitalWrite (ventilador2, HIGH);
-  
-//Inicialización del NFC -- quitar comentarios
-//  SPI.begin();        //Iniciamos el Bus SPI
-//  mfrc522.PCD_Init(); // Iniciamos el MFRC522
+  dht.begin();
+  pinMode(ventilador, OUTPUT);
+  digitalWrite (ventilador, HIGH);
 
 //Pines para el relay del solenoide
   pinMode(switchPuerta, INPUT_PULLUP);
   pinMode(solenoide, OUTPUT);
   digitalWrite (solenoide, LOW);
+
+//Pines buzzer
+  digitalWrite(A1, LOW);
   
 //Transiciones a estados
   S0->addTransition(&transitionS0S1,S1);  // Transición inicio a mover motores
@@ -104,9 +124,34 @@ void setup() {
 }
 
 void loop() {
-  if (Serial.available()>0){
+  if(Serial.available() >0){
     input = Serial.read();
   }
   machine.run();
   delay(STATE_DELAY);
+  
+//  readSerialPort();
+//  if (input != 0) {
+//   sendData();
+//  }
+//  delay(500);
 }
+
+//Comunicacion con raspberry
+//void readSerialPort() {
+// input = 0;
+// if (Serial.available()) {
+//   delay(10);
+//   while (Serial.available() > 0) {
+//     input = Serial.read();
+//   }
+//   Serial.flush();
+// }
+//}
+
+// void sendData() {
+// //write data
+// Serial.print(nom);
+// Serial.print(" received : ");
+// Serial.print(input);
+//}

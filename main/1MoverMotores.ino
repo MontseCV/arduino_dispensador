@@ -4,37 +4,38 @@ void stateMoverMotores() {
   Serial.println("State0");
   Serial.println("Moviendo motores");
   }
-//  HIGH = ABIERTO, LOW = CERRADO ---- switches
-//  if (digitalRead(switchArriba) == HIGH && digitalRead(switchAbajo) == LOW){
-//    while (digitalRead(switchAbajo) == LOW){
-//       //Activar una direccion y fijar la velocidad con stepDelay
-//       digitalWrite(dirPin, LOW);
-//       // Giramos 200 pulsos para hacer una vuelta completa
-//      digitalWrite(stepPin, HIGH);
-//      delay(stepDelay);
-//      digitalWrite(stepPin, LOW);
-//      delay(stepDelay);
-//    }
-//  }
-//
-//  else if (digitalRead(switchArriba) == LOW && digitalRead(switchAbajo) == HIGH){
-//     while (digitalRead(switchBase) == LOW){
-//      digitalWrite(dirPin2, LOW);
-//      digitalWrite(stepPin2, HIGH);
-//      delay(stepDelay);
-//      digitalWrite(stepPin2, LOW);
-//      delay(stepDelay);
-//    }
-//  }
-// delay(10);
+ // HIGH = ABIERTO, LOW = CERRADO ---- switches
+  if (digitalRead(switchArriba) == HIGH && digitalRead(switchAbajo) == LOW){ //Cremallera posición 0 
+    digitalWrite(enableCremallera, HIGH);
+    while (digitalRead(switchAbajo) == LOW){
+       //Activar una direccion y fijar la velocidad con stepDelay
+       digitalWrite(dirPin, LOW);
+       // Giramos 200 pulsos para hacer una vuelta completa
+      digitalWrite(stepPin, HIGH);
+      delay(stepDelay);
+      digitalWrite(stepPin, LOW);
+      delay(stepDelay);
+    }
+    digitalWrite(enableCremallera, LOW);
+  }
 
-//  if (Serial.available()>0){
-//    input = Serial.read();
-//  }
+  else if (digitalRead(switchArriba) == LOW && digitalRead(switchAbajo) == HIGH){ //Base posición 0
+     digitalWrite(enableBase, HIGH);
+     while (digitalRead(switchBase) == LOW){
+      digitalWrite(dirPin2, LOW);
+      digitalWrite(stepPin2, HIGH);
+      delay(stepDelay);
+      digitalWrite(stepPin2, LOW);
+      delay(stepDelay);
+    }
+    digitalWrite(enableBase, LOW);
+  }
+ delay(10);
+
 }
 
 bool transitionS1S2(){
-    if(input == '1'){
+    if(digitalRead(switchBase) == HIGH && digitalRead(switchArriba) == LOW && digitalRead(switchAbajo) == HIGH){
     return true;
   }else
     return false;

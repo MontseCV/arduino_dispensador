@@ -3,35 +3,29 @@ void stateComprobarT(){
   Serial.println("State2");
   Serial.println("Comprobando temperatura");
   }
-//  if (Serial.available()>0){
-//    input = Serial.read();
-//  }
-  
-//  Serial.println("State 2");
-//  humedad = dht.readHumidity();
-//  temp = dht.readTemperature();
-//  Serial.print("Temperatura: ");
-//  Serial.print(temp);
-//  Serial.print("ºC Humedad: ");
-//  Serial.print(humedad);
-//  Serial.println("%");
-//  delay(2000);
-//
-//  digitalWrite (ventilador1, HIGH);
-//  digitalWrite (ventilador2, HIGH);
+  humedad = dht.readHumidity();
+  temp = dht.readTemperature();
+  Serial.print("Temperatura: ");
+  Serial.print(temp);
+  Serial.print("ºC Humedad: ");
+  Serial.print(humedad);
+  Serial.println("%");
+  delay(2000);
+
+  digitalWrite (ventilador, HIGH);
 }
 
 bool transitionS2S3(){
-  if(input == '2'){
+//  if(input == '2')
+//  {
+//    return true;
+//  }else
+//    return false;
+  if(temp >= 29)
+  {
     return true;
   }else
     return false;
-  
-//  if(temp >= 20)
-//  {
-//  return true;
-//  }else
-//  return false;
 }
 
 bool transitionS2S4(){
