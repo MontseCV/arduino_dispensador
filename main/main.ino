@@ -1,5 +1,6 @@
 //Librerias
 #include <StateMachine.h>
+#include <SoftwareSerial.h>
 #include <DHT.h>
 #include <SPI.h>
 #include <MFRC522.h>
@@ -9,13 +10,15 @@
 //NFC 
 #define RST_PIN  5    //Pin 5 para el reset del RC522
 #define SS_PIN  53   //Pin 53 para el SS (SDA) del RC522
+//Create software serial object to communicate with SIM800L
+SoftwareSerial mySerial(11, 10); //SIM800L Tx & Rx is connected to Arduino #3 & #2
 MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
 MFRC522::MIFARE_Key key;
 MFRC522::StatusCode status;
 
 //*************************** variables generales ***************************
 const int STATE_DELAY = 1000;
-int input;
+char input;
 String nom = "Arduino";
 
 //************************* Variables motores *********************************
@@ -51,6 +54,8 @@ int switchPuerta = 26; //A7
 int buzzer = 27;
 int h = 0;
 char alarmas;
+int cas1 = 0;
+int cas2 = 0;
 
 
 //Declarar estados
@@ -67,16 +72,19 @@ State* S7 = machine.addState(&stateActivarMotores);
 State* S8 = machine.addState(&stateMandarAlarma);
 State* S9 = machine.addState(&stateGirarBase);
 State* S10 = machine.addState(&stateACPuerta);
-
+//State* S11 = machine.addState(&stateMandarSMS);
 
 void setup() {
+  while(!Serial){
+    ;
+  }
   Serial.begin(9600);
-  Serial.println("Iniciando...");
-
+  mySerial.begin(9600);
 //Inicialización del NFC -- quitar comentarios
   SPI.begin();        //Iniciamos el Bus SPI
   mfrc522.PCD_Init(); // Iniciamos el MFRC522
-
+  Serial.println("Iniciando...");
+  
 // Pines para los motores
   pinMode(dirPin, OUTPUT);
   pinMode(stepPin, OUTPUT);
@@ -110,7 +118,8 @@ void setup() {
   S2->addTransition(&transitionS2S3,S3);  // Activa los ventiladores cuando temp >= 20
   S2->addTransition(&transitionS2S4,S4);  // Se requiere registrar NFC
   S2->addTransition(&transitionS2S5,S5);  // Transición a reconocer usuario
-  S2->addTransition(&transitionS2S6,S6);  // Se requiere eliminar usuario  
+  S2->addTransition(&transitionS2S6,S6);  // Se requiere eliminar usuario
+  S2->addTransition(&transitionS2S8,S8);  // Horario listo  
   S3->addTransition(&transitionS3S2,S2);  // temp < 20
   S4->addTransition(&transitionS4S2,S2);  // Vuelve a comprobar temperatura
   S5->addTransition(&transitionS5S7,S7);  // Transición a dispensar
@@ -119,16 +128,20 @@ void setup() {
   S6->addTransition(&transitionS6S2,S2);  // Vuelve a comprobar temperatura
   S7->addTransition(&transitionS7S8,S8);  // Transición a mandar alarma después de dispensar
   S8->addTransition(&transitionS8S0,S0);  // Volver a inicio
+  S8->addTransition(&transitionS8S5,S5);  // Activar reconocimiento
   S9->addTransition(&transitionS9S10,S10);  // Abrir y cerrar puerta
   S10->addTransition(&transitionS10S0,S0);  // Volver a inicio
 }
 
 void loop() {
+  machine.run();
+  delay(STATE_DELAY);
+  
   if(Serial.available() >0){
     input = Serial.read();
   }
-  machine.run();
-  delay(STATE_DELAY);
+  Serial.flush();
+  
   
 //  readSerialPort();
 //  if (input != 0) {
