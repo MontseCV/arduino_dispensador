@@ -1,63 +1,69 @@
+int senalAlarma = 0;
+
 void stateComprobarT(){
  if(machine.executeOnce){
   Serial.println("State2");
   Serial.println("Comprobando temperatura");
   }
-//  humedad = dht.readHumidity();
+  Serial.println("Rodo otaku y furro");
+//    humedad = dht.readHumidity();
 //  temp = dht.readTemperature();
 //  Serial.print("Temperatura: ");
 //  Serial.print(temp);
 //  Serial.print("ºC Humedad: ");
 //  Serial.print(humedad);
 //  Serial.println("%");
-//  delay(2000);
+//  delay(500);
 //
-//  digitalWrite (ventilador, HIGH);
-
+//  if(temp >= 25){
+//    digitalWrite (ventilador, LOW);
+//    delay(500);
+//  }else{
+//    digitalWrite (ventilador, HIGH);
+//  }
+//  delay(2000);
+//  while (!Serial.available() > 0);{
+//    Serial.println("Ingrese cual compartimento se requiere:");
+//    senalAlarma = Serial.readString().toInt();
+//    Serial.println(senalAlarma);
+//    delay(1000);
+//  }
 }
 
 bool transitionS2S3(){
-  if(input == '2')
+  if(input == '1')
   {
+    digitalWrite (ventilador, HIGH);
     return true;
   }else
-    return false;
-//  if(temp >= 29)
-//  {
-//    return true;
-//  }else
-//    return false;
+  return false;
 }
 
 bool transitionS2S4(){
-  if(input == '3')
-  {
-  return true;
+  if(input == '2'){
+    digitalWrite (ventilador, HIGH);
+    return true;
   }else
   return false;
 }
 
-bool transitionS2S5(){
-  if(input == '4')
-  {
-  return true;
-  }else
-  return false;
-}
+//bool transitionS2S5(){
+//  if(input == '3'){
+//    digitalWrite (ventilador, HIGH);
+//  return true;
+//  }else
+//  return false;
+//}
 
-bool transitionS2S6(){
-  if(input == '5')
-  {
-  return true;
+bool transitionS2S7(){
+  if(input == '4'){
+    digitalWrite (ventilador, HIGH);
+//    if(senalAlarma == '1'){
+//      alarmas = 'C';
+//    }else if(senalAlarma == '2'){
+//      alarmas = 'D';
+//    }
+    return true;
   }else
-  return false;
-}
-
-bool transitionS2S8(){
-  if(input == 'F')
-  {
-    alarmas = 'D';
-  return true;
-  }else
-  return false;
+    return false;
 }

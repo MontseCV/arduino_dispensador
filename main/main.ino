@@ -12,43 +12,47 @@
 #define SS_PIN  53   //Pin 53 para el SS (SDA) del RC522
 //Create software serial object to communicate with SIM800L
 SoftwareSerial mySerial(11, 10); //SIM800L Tx & Rx is connected to Arduino #3 & #2
+
 MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
 MFRC522::MIFARE_Key key;
 MFRC522::StatusCode status;
 
-//*************************** variables generales ***************************
+
+//variables generales
 const int STATE_DELAY = 1000;
 char input;
 String nom = "Arduino";
 
-//************************* Variables motores *********************************
+//Variables motores
 const int dirPin = 9;
-const int stepPin = 6;
+const int stepPin = 8;
 const int dirPin2 = 7;
-const int stepPin2 = 8;
-const int switchArriba = 2; 
-const int switchAbajo = 3; 
-const int switchBase = 4;
-const int enableBase = 29;
-const int enableCremallera = 30;
+const int stepPin2 = 6;
+const int switchArriba = 29; //2 
+const int switchAbajo = 30;  //3
+const int switchBase = 4; //4
+const int enableBase = 2;  //29
+const int enableCremallera = 3;  //30
+const int valvula = 31;
 int stepDelay = 10;
 int stepDelay2 = 15;
 const int boton = 28;
 char compartimentos;
+char compart;
 int dosis = 0;
 int steps;
 int cont = 0;
 int Pdispensadas;
 
-//***************** Variables sensor de temperatura*******************************
+//Variables sensor de temperatura
 int sensor = 22; 
 int ventilador = 24; 
 int temp, humedad;
 DHT dht (sensor, DHT11);
 
 //Variables solenoide y switch
-int solenoide = 25; //A6
-int switchPuerta = 26; //A7
+int solenoide = 25; 
+int switchPuerta = 26; 
 
 //Variables alarma
 int buzzer = 27;
@@ -64,15 +68,13 @@ StateMachine machine = StateMachine();
 State* S0 = machine.addState(&state0); 
 State* S1 = machine.addState(&stateMoverMotores);
 State* S2 = machine.addState(&stateComprobarT);
-State* S3 = machine.addState(&stateActivarVentiladores);
-State* S4 = machine.addState(&stateRegistrarNFC);
-State* S5 = machine.addState(&stateReconocerUsuario);
-State* S6 = machine.addState(&stateEliminarUsuario);
-State* S7 = machine.addState(&stateActivarMotores);
-State* S8 = machine.addState(&stateMandarAlarma);
-State* S9 = machine.addState(&stateGirarBase);
-State* S10 = machine.addState(&stateACPuerta);
-//State* S11 = machine.addState(&stateMandarSMS);
+State* S3 = machine.addState(&stateRegistrarNFC);
+State* S4 = machine.addState(&stateReconocerUsuario);
+//State* S5 = machine.addState(&stateEliminarUsuario);
+State* S6 = machine.addState(&stateActivarMotores);
+State* S7 = machine.addState(&stateMandarAlarma);
+State* S8 = machine.addState(&stateGirarBase);
+State* S9 = machine.addState(&stateACPuerta);
 
 void setup() {
   while(!Serial){
@@ -81,8 +83,8 @@ void setup() {
   Serial.begin(9600);
   mySerial.begin(9600);
 //Inicialización del NFC -- quitar comentarios
-  SPI.begin();        //Iniciamos el Bus SPI
-  mfrc522.PCD_Init(); // Iniciamos el MFRC522
+//  SPI.begin();        //Iniciamos el Bus SPI
+//  mfrc522.PCD_Init(); // Iniciamos el MFRC522
   Serial.println("Iniciando...");
   
 // Pines para los motores
@@ -95,9 +97,11 @@ void setup() {
   pinMode(switchAbajo,INPUT_PULLUP);
   pinMode(enableBase, OUTPUT);
   pinMode(enableCremallera, OUTPUT);
+  digitalWrite(valvula, OUTPUT);
   pinMode(boton,INPUT_PULLUP);
   digitalWrite(enableBase, LOW);
   digitalWrite(enableCremallera, LOW);
+  digitalWrite(valvula, LOW);
 
 //Pines sensor de temperatura y ventiladores
   dht.begin();
@@ -107,30 +111,28 @@ void setup() {
 //Pines para el relay del solenoide
   pinMode(switchPuerta, INPUT_PULLUP);
   pinMode(solenoide, OUTPUT);
-  digitalWrite (solenoide, LOW);
+  digitalWrite (solenoide, HIGH);
 
 //Pines buzzer
-  digitalWrite(A1, LOW);
+  digitalWrite(buzzer, LOW);
   
 //Transiciones a estados
   S0->addTransition(&transitionS0S1,S1);  // Transición inicio a mover motores
   S1->addTransition(&transitionS1S2,S2);  // Comprobar temperatura
-  S2->addTransition(&transitionS2S3,S3);  // Activa los ventiladores cuando temp >= 20
-  S2->addTransition(&transitionS2S4,S4);  // Se requiere registrar NFC
-  S2->addTransition(&transitionS2S5,S5);  // Transición a reconocer usuario
-  S2->addTransition(&transitionS2S6,S6);  // Se requiere eliminar usuario
-  S2->addTransition(&transitionS2S8,S8);  // Horario listo  
-  S3->addTransition(&transitionS3S2,S2);  // temp < 20
-  S4->addTransition(&transitionS4S2,S2);  // Vuelve a comprobar temperatura
-  S5->addTransition(&transitionS5S7,S7);  // Transición a dispensar
-  S5->addTransition(&transitionS5S9,S9);  // Rellenar compartimentos
-  S5->addTransition(&transitionS5S8,S8);  // 3 intentos fallidos, mandar alarma
-  S6->addTransition(&transitionS6S2,S2);  // Vuelve a comprobar temperatura
-  S7->addTransition(&transitionS7S8,S8);  // Transición a mandar alarma después de dispensar
-  S8->addTransition(&transitionS8S0,S0);  // Volver a inicio
-  S8->addTransition(&transitionS8S5,S5);  // Activar reconocimiento
-  S9->addTransition(&transitionS9S10,S10);  // Abrir y cerrar puerta
-  S10->addTransition(&transitionS10S0,S0);  // Volver a inicio
+  S2->addTransition(&transitionS2S3,S3);  // Se requiere registrar NFC
+  S2->addTransition(&transitionS2S4,S4);  // Transición a reconocer usuario
+//  S2->addTransition(&transitionS2S5,S5);  // Se requiere eliminar usuario
+  S2->addTransition(&transitionS2S7,S7);  // Horario listo  
+  S3->addTransition(&transitionS3S2,S2);  // Vuelve a comprobar temperatura
+  S4->addTransition(&transitionS4S6,S6);  // Transición a dispensar
+  S4->addTransition(&transitionS4S8,S8);  // Rellenar compartimentos
+  S4->addTransition(&transitionS4S7,S7);  // 3 intentos fallidos, mandar alarma
+//  S5->addTransition(&transitionS5S2,S2);  // Vuelve a comprobar temperatura
+  S6->addTransition(&transitionS6S7,S7);  // Transición a mandar alarma después de dispensar
+  S7->addTransition(&transitionS7S0,S0);  // Volver a inicio
+  S7->addTransition(&transitionS7S4,S4);  // Activar reconocimiento
+  S8->addTransition(&transitionS8S9,S9);  // Abrir y cerrar puerta
+  S9->addTransition(&transitionS9S0,S0);  // Volver a inicio
 }
 
 void loop() {
