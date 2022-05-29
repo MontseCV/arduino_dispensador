@@ -12,16 +12,16 @@ void stateReconocerUsuario(){
   if( mfrc522.PICC_IsNewCardPresent()){  
       //Seleccionamos una tarjeta
     if ( mfrc522.PICC_ReadCardSerial()) {
-          // Enviamos serialemente su UID
-          Serial.print("UID:");
-          for (byte i = 0; i < mfrc522.uid.size; i++) {
-                  Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
-                  Serial.print(mfrc522.uid.uidByte[i], HEX);   
-          } 
-          Serial.println();
-          // Terminamos la lectura de la tarjeta  actual
-          mfrc522.PICC_HaltA();
-          identificado = 1;
+      // Enviamos serialemente su UID
+      Serial.print("UID:");
+      for (byte i = 0; i < mfrc522.uid.size; i++) {
+              Serial.print(mfrc522.uid.uidByte[i] < 0x10 ? " 0" : " ");
+              Serial.print(mfrc522.uid.uidByte[i], HEX);   
+      } 
+      Serial.println();
+      // Terminamos la lectura de la tarjeta  actual
+      mfrc522.PICC_HaltA();
+      identificado = 1;
     }      
   }
 }
