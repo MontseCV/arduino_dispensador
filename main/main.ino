@@ -33,7 +33,7 @@ const int switchAbajo = 30;  //3
 const int switchBase = 4; //4
 const int enableBase = 2;  //29
 const int enableCremallera = 3;  //30
-const int valvula = 31;
+int valvula = 31;
 int stepDelay = 10;
 int stepDelay2 = 15;
 const int boton = 28;
@@ -92,11 +92,11 @@ void setup() {
   pinMode(switchAbajo,INPUT_PULLUP);
   pinMode(enableBase, OUTPUT);
   pinMode(enableCremallera, OUTPUT);
-  digitalWrite(valvula, OUTPUT);
+  pinMode(valvula, OUTPUT);
+  digitalWrite(valvula, HIGH);
   pinMode(boton,INPUT_PULLUP);
   digitalWrite(enableBase, LOW);
   digitalWrite(enableCremallera, LOW);
-  digitalWrite(valvula, HIGH);
 
 //Pines sensor de temperatura y ventiladores
   dht.begin();

@@ -37,7 +37,6 @@ bool transitionS4S5(){
 
 bool transitionS4S6(){
  if(input == '6'){
-  intentos = 0;
   alarmas = 'B';
   return true;
  }else{
@@ -46,7 +45,8 @@ bool transitionS4S6(){
 }
 
 bool transitionS4S7(){
-  if(identificado == 1 && input == '6' or input == '9'){
+  if(identificado == 1 && input == '7' or input == '9'){
+    identificado = 0;
     return true;
   }else
     return false;

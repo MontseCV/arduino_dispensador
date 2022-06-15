@@ -1,6 +1,6 @@
 void Movimientomotores(){
   digitalWrite(enableBase, HIGH);
-      delay(500);
+  delay(500);
   //Primero asegura la posición 0 de los compartimentos
       if(digitalRead(switchBase) == HIGH){
         while (digitalRead(switchBase) == HIGH) {
@@ -84,7 +84,7 @@ void Movimientomotores2(){
   digitalWrite(stepPin2, LOW);
   delay(stepDelay);
  }
-  delay(2000);
+  delay(1000);
 while (digitalRead(switchArriba) == LOW){ //BAJA LA CREMALLERA
    //Activar una direccion y fijar la velocidad con stepDelay
   digitalWrite(dirPin, LOW);
@@ -96,7 +96,7 @@ while (digitalRead(switchArriba) == LOW){ //BAJA LA CREMALLERA
 }
   delay(100);
   digitalWrite(valvula, HIGH);
-  delay(2000); //Se detiene 2 segs
+  delay(1000); //Se detiene 2 segs
 while (digitalRead(switchAbajo) == LOW){ //SUBE LA CREMALLERA
    //Activar una direccion y fijar la velocidad con stepDelay
   digitalWrite(dirPin, HIGH);
@@ -108,5 +108,4 @@ while (digitalRead(switchAbajo) == LOW){ //SUBE LA CREMALLERA
 }
 digitalWrite(enableBase, LOW);
 digitalWrite(enableCremallera, LOW);
-Pdispensadas--;
 }

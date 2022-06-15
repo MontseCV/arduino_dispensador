@@ -20,13 +20,13 @@ void stateComprobarT(){
   }else{
     digitalWrite (ventilador, HIGH);
   }
-  delay(2000);
-  while (!Serial.available() > 0);{
-    Serial.println("Ingrese cual compartimento se requiere:");
-    senalAlarma = Serial.readString().toInt();
-    Serial.println(senalAlarma);
-    delay(1000);
-  }
+  delay(1000);
+//  while (!Serial.available() > 0);{
+//    Serial.println("Ingrese cual compartimento se requiere:");
+//    senalAlarma = Serial.readString().toInt();
+//    Serial.println(senalAlarma);
+//    delay(1000);
+//  }
 }
 
 bool transitionS2S3(){
@@ -47,9 +47,14 @@ bool transitionS2S4(){
 }
 
 bool transitionS2S6(){
-  if(senalAlarma == '1'){
+  if(input == '3' or input == '4'){
+    if(input == '3'){
     alarmas = 'C';
-  }else if(senalAlarma == '2'){
-    alarmas = 'D';
+    }else if(input == '4'){
+     alarmas = 'D'; 
+    }
+    return true;
+  }else{
+    return false;
   }
 }

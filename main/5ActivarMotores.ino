@@ -3,9 +3,8 @@ void stateActivarMotores() {
     Serial.println("State 6");
     Serial.println("Dispensar");
   }
-  
-  while (!Serial.available() > 0);{
     Serial.println("Ingrese la dosis:");
+  while (!Serial.available() > 0);{ 
     dosis = Serial.readString().toInt();
     Serial.println(dosis);
     delay(1000);
@@ -16,36 +15,29 @@ void stateActivarMotores() {
     delay(1000);
 
 for(int i = 1; i <= dosis; i++){
-  Pdispensadas = dosis;
   switch(compartimentos){
     case 'A':
       Serial.println("Giro del compartimento 1");
-      steps = 17;
+      steps = 18;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
     break;
   
     case 'B':
       Serial.println("Giro del compartimento 2");
-      steps = 35;
+      steps = 33;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
     break;
   
     case 'C':
       Serial.println("Giro del compartimento 3");
-      steps = 54;
+      steps = 52;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
     break;
   
     case 'D':
@@ -54,28 +46,22 @@ for(int i = 1; i <= dosis; i++){
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
     break;
   
     case 'E':
       Serial.println("Giro del compartimento 5");
-      steps = 90;
+      steps = 89;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
     break;
   
     case 'F':
       Serial.println("Giro del compartimento 6");
-      steps = 108;
+      steps = 107;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
     break;
   
     case 'G':
@@ -84,38 +70,34 @@ for(int i = 1; i <= dosis; i++){
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
     break;
   
     case 'H':
       Serial.println("Giro del compartimento 8");
-      steps = 145;
+      steps = 143;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
     break;
   
     case 'I':
       Serial.println("Giro del compartimento 9");
-      steps = 163;
+      steps = 162;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
     break;
   
     case 'J':
       Serial.println("Giro del compartimento 10");
-      steps = 182;
+      steps = 180;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
-      Serial.print("Quedan por dispensar:");
-      Serial.println(Pdispensadas);
+    break;
+
+    case 'K':
+      Pdispensadas = 1;
     break;
   }
 }
@@ -125,7 +107,8 @@ delay(1000);
 }
 
 bool transitionS5S6(){
- if(Pdispensadas == 0){
+ if(Pdispensadas == 1){
+  Pdispensadas = 0;
   alarmas = 'A';
   return true;
  }else

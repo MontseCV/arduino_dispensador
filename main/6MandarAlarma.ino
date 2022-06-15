@@ -4,6 +4,9 @@ int fMax=4000; //Frecuencia más alta que queremos emitir
 int i=0;
 int veces = 0;
 String numero;
+String str;
+int StringCount = 0;
+String strs[20];
 
 void stateMandarAlarma() {
   if(machine.executeOnce){
@@ -19,25 +22,43 @@ void stateMandarAlarma() {
   case 'A':
   if(alarmas == 'A'){
     Serial.println("Se han dispensado los medicamentos.");
-    if(machine.executeOnce){
-        while(numero.length() == 0){
-          Serial.println("Ingrese numero:");
-          numero = Serial.readString();
-          numero.trim();
-     }
-      Enviar_msj(numero, "Tome sus medicamentos del dispensador.");
-    }    
     for(veces = 0; veces < 4; veces++){
-    //generar tono de 440Hz durante 1000 ms
-    tone(buzzer, 440, 1000);
-    delay(500);
-    //detener tono durante 500ms  
-    noTone(buzzer);
-    delay(500);
-    //generar tono de 523Hz durante 500ms, y detenerlo durante 500ms.
-    tone(buzzer, 523, 500);
-    delay(500);
+      //generar tono de 440Hz durante 1000 ms
+      tone(buzzer, 440, 1000);
+      delay(500);
+      //detener tono durante 500ms  
+      noTone(buzzer);
+      delay(500);
+      //generar tono de 523Hz durante 500ms, y detenerlo durante 500ms.
+      tone(buzzer, 523, 500);
+      delay(500);
     }
+    
+    if(machine.executeOnce){
+        while (!Serial.available() > 0);{
+          Serial.println("Ingrese todos los numeros");
+          str = Serial.readString();
+          while (str.length() > 0){
+              int index = str.indexOf(' ');
+              if (index == -1) // No space found
+              {
+                strs[StringCount++] = str;
+                break;
+              }
+              else
+              {
+                strs[StringCount++] = str.substring(0, index);
+                str = str.substring(index+1);
+              }
+          }
+         for (int i = 0; i < StringCount; i++){
+            Enviar_msj(strs[i], "Tome sus medicamentos del dispensador.");
+            delay(3000);
+          }
+         Serial.println("OK");
+         delay(1000);
+        }
+    }   
     cas1 = 1;
     cas2 = 0;
     alarmas = 'E';
@@ -48,15 +69,7 @@ void stateMandarAlarma() {
   case 'B':
     Serial.println("No se reconoce usuario.");
     if(alarmas == 'B'){
-      if(machine.executeOnce){
-        while(numero.length() == 0){
-          Serial.println("Ingrese numero:");
-          numero = Serial.readString();
-          numero.trim();
-     }
-      Enviar_msj(numero, "No se ha reconocido al usuario.");
-    } 
-    for(veces = 0; veces < 4; veces++){
+      for(veces = 0; veces < 4; veces++){
       //sonido más agudo
       for (i=fMin;i<=fMax; i++){
          tone(buzzer, i, duracion);
@@ -66,6 +79,31 @@ void stateMandarAlarma() {
         tone(buzzer, i, duracion);
       }
     }
+      if(machine.executeOnce){
+        while (!Serial.available() > 0);{
+          Serial.println("Ingrese todos los numeros");
+          str = Serial.readString();
+          while (str.length() > 0){
+              int index = str.indexOf(' ');
+              if (index == -1) // No space found
+              {
+                strs[StringCount++] = str;
+                break;
+              }
+              else
+              {
+                strs[StringCount++] = str.substring(0, index);
+                str = str.substring(index+1);
+              }
+          }
+         for (int i = 0; i < StringCount; i++){
+            Enviar_msj(strs[i], "No se ha reconocido al usuario que intenta ingresar al dispensador.");
+            delay(3000);
+          }
+         Serial.println("OK");
+         delay(1000);
+        }
+    }
     cas1 = 1;
     cas2 = 0;
     alarmas = 'E';
@@ -74,20 +112,40 @@ void stateMandarAlarma() {
 
   //Caso C: quedan pocas pastillas en algún compartimento.
   case 'C':
-    Serial.println("Quedan pocas pastillas del compartimento:");
+    Serial.println("Quedan pocas pastillas del compartimento.");
     if(alarmas == 'C'){
-      if(machine.executeOnce){
-        while(numero.length() == 0){
-          Serial.println("Ingrese numero:");
-          numero = Serial.readString();
-          numero.trim();
-     }
-      Enviar_msj(numero, "Quedan pocas pastillas en el compartimento."); //indicar compartimento
-    } 
+      for(veces = 0; veces < 4; veces++){
       tone(buzzer,500, 1000);
       delay(500);
       tone(buzzer,550, 1000);
       delay(500);
+    }
+    
+      if(machine.executeOnce){
+        while (!Serial.available() > 0);{
+          Serial.println("Ingrese todos los numeros");
+          str = Serial.readString();
+          while (str.length() > 0){
+              int index = str.indexOf(' ');
+              if (index == -1) // No space found
+              {
+                strs[StringCount++] = str;
+                break;
+              }
+              else
+              {
+                strs[StringCount++] = str.substring(0, index);
+                str = str.substring(index+1);
+              }
+          }
+         for (int i = 0; i < StringCount; i++){
+            Enviar_msj(strs[i], "Quedan pocas pastillas en el compartimento.");
+            delay(3000);
+          }
+         Serial.println("OK");
+         delay(1000);
+        }
+    }
       cas1 = 1;
       cas2 = 0;
     }
@@ -98,13 +156,30 @@ void stateMandarAlarma() {
   Serial.println("Es hora de su medicamento.");
   if(alarmas == 'D'){
     if(machine.executeOnce){
-        while(numero.length() == 0){
-          Serial.println("Ingrese numero:");
-          numero = Serial.readString();
-          numero.trim();
-     }
-      Enviar_msj(numero, "Es hora de su medicamento.");
-    } 
+        while (!Serial.available() > 0);{
+          Serial.println("Ingrese todos los numeros");
+          str = Serial.readString();
+          while (str.length() > 0){
+              int index = str.indexOf(' ');
+              if (index == -1) // No space found
+              {
+                strs[StringCount++] = str;
+                break;
+              }
+              else
+              {
+                strs[StringCount++] = str.substring(0, index);
+                str = str.substring(index+1);
+              }
+          }
+         for (int i = 0; i < StringCount; i++){
+            Enviar_msj(strs[i], "Es hora de su medicamento.");
+            delay(3000);
+          }
+         Serial.println("OK");
+         delay(1000);
+        }
+    }
     //generar tono de 440Hz durante 1000 ms
     tone(buzzer, 440, 1000);
     delay(500);
@@ -134,6 +209,7 @@ void stateMandarAlarma() {
 void Enviar_msj(String numero, String msj)
 {
   //Se establece el formato de SMS en ASCII
+  numero.trim();
   String config_numero = "AT+CMGS=\"+52" + numero + "\"\r\n";
   Serial.println(config_numero);
 
