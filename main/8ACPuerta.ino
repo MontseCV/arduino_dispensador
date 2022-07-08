@@ -4,6 +4,8 @@ void stateACPuerta() {
     Serial.println("Abrir y cerrar puerta");
     digitalWrite (solenoide, LOW);     //Abrir puerta
   }
+  delay(1000);
+  digitalWrite(solenoide,HIGH);
   while(digitalRead(switchPuerta) == LOW){ //Esperar hasta que se abra la puerta
     delay (10);
   }
@@ -11,11 +13,10 @@ void stateACPuerta() {
   while(digitalRead(switchPuerta) == HIGH){ //Esperar hasta que se cierre la puerta
     delay (10);
   }
-  digitalWrite (solenoide, HIGH);   //Cerrar la puerta
 }
 
 bool transitionS8S0(){
-  if(digitalRead(solenoide) == HIGH){
+  if(digitalRead(switchPuerta) == LOW){
     return true;
   }else
   return false;

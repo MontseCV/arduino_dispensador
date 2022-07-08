@@ -36,7 +36,7 @@ void stateGirarBase() {
   
     case 'D':
       Serial.println("Giro del compartimento 4");
-      steps = 125;
+      steps = 123;
       Movimientomotores();
       compuerta = 1;
     break;
@@ -57,7 +57,7 @@ void stateGirarBase() {
   
     case 'G':
       Serial.println("Giro del compartimento 7");
-      steps = 178;
+      steps = 176;
       Movimientomotores();
       compuerta = 1;
     break;
@@ -71,7 +71,7 @@ void stateGirarBase() {
   
     case 'I':
       Serial.println("Giro del compartimento 9");
-      steps = 16;
+      steps = 19;
       Movimientomotores();
       compuerta = 1;
     break;
@@ -80,6 +80,10 @@ void stateGirarBase() {
       Serial.println("Giro del compartimento 10");
       steps = 32;
       Movimientomotores();
+      compuerta = 1;
+    break;
+
+    case 'K':
       compuerta = 1;
     break;
   }

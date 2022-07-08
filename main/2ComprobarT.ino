@@ -21,12 +21,6 @@ void stateComprobarT(){
     digitalWrite (ventilador, HIGH);
   }
   delay(1000);
-//  while (!Serial.available() > 0);{
-//    Serial.println("Ingrese cual compartimento se requiere:");
-//    senalAlarma = Serial.readString().toInt();
-//    Serial.println(senalAlarma);
-//    delay(1000);
-//  }
 }
 
 bool transitionS2S3(){
@@ -47,12 +41,15 @@ bool transitionS2S4(){
 }
 
 bool transitionS2S6(){
-  if(input == '3' or input == '4'){
+  if(input == '3' or input == '4' or input == 'X'){
     if(input == '3'){
     alarmas = 'C';
     }else if(input == '4'){
      alarmas = 'D'; 
+    }else if(input == 'X'){
+      alarmas = 'F';
     }
+    digitalWrite (ventilador, HIGH);
     return true;
   }else{
     return false;

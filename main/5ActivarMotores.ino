@@ -18,7 +18,7 @@ for(int i = 1; i <= dosis; i++){
   switch(compartimentos){
     case 'A':
       Serial.println("Giro del compartimento 1");
-      steps = 18;
+      steps = 15;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
@@ -34,7 +34,7 @@ for(int i = 1; i <= dosis; i++){
   
     case 'C':
       Serial.println("Giro del compartimento 3");
-      steps = 52;
+      steps = 51;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
@@ -66,7 +66,7 @@ for(int i = 1; i <= dosis; i++){
   
     case 'G':
       Serial.println("Giro del compartimento 7");
-      steps = 126;
+      steps = 125;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();
@@ -82,7 +82,7 @@ for(int i = 1; i <= dosis; i++){
   
     case 'I':
       Serial.println("Giro del compartimento 9");
-      steps = 162;
+      steps = 160;
       Movimientomotores();
       Movimientomotores1();
       Movimientomotores2();

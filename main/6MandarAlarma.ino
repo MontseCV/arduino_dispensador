@@ -9,11 +9,14 @@ int StringCount = 0;
 String strs[20];
 
 void stateMandarAlarma() {
+  String str;
+  int StringCount = 0;
+  String strs[20];
   if(machine.executeOnce){
     Serial.println("State 7");
     Serial.println("*Alarma");
   }
-  if(input == 'A' or input == 'B' or input == 'C' or input == 'D' or input == 'E'){
+  if(input == 'A' or input == 'B' or input == 'C' or input == 'D' or input == 'E' or input == 'F'){
     alarmas = input;
   }
   
@@ -53,7 +56,7 @@ void stateMandarAlarma() {
           }
          for (int i = 0; i < StringCount; i++){
             Enviar_msj(strs[i], "Tome sus medicamentos del dispensador.");
-            delay(3000);
+            delay(5000);
           }
          Serial.println("OK");
          delay(1000);
@@ -98,7 +101,7 @@ void stateMandarAlarma() {
           }
          for (int i = 0; i < StringCount; i++){
             Enviar_msj(strs[i], "No se ha reconocido al usuario que intenta ingresar al dispensador.");
-            delay(3000);
+            delay(5000);
           }
          Serial.println("OK");
          delay(1000);
@@ -140,14 +143,15 @@ void stateMandarAlarma() {
           }
          for (int i = 0; i < StringCount; i++){
             Enviar_msj(strs[i], "Quedan pocas pastillas en el compartimento.");
-            delay(3000);
+            delay(5000);
           }
          Serial.println("OK");
          delay(1000);
         }
     }
-      cas1 = 1;
-      cas2 = 0;
+    cas1 = 1;
+    cas2 = 0;
+    alarmas = 'E';
     }
   break;
   
@@ -174,7 +178,7 @@ void stateMandarAlarma() {
           }
          for (int i = 0; i < StringCount; i++){
             Enviar_msj(strs[i], "Es hora de su medicamento.");
-            delay(3000);
+            delay(5000);
           }
          Serial.println("OK");
          delay(1000);
@@ -202,8 +206,49 @@ void stateMandarAlarma() {
     delay(500);
   }
   break;
- }
 
+ //Caso F: 
+  case 'F':
+  Serial.println("A punto de caducar.");
+    if(alarmas == 'F'){
+      for(veces = 0; veces < 4; veces++){
+      tone(buzzer,500, 1000);
+      delay(500);
+      tone(buzzer,550, 1000);
+      delay(500);
+    }
+    
+      if(machine.executeOnce){
+        while (!Serial.available() > 0);{
+          Serial.println("Ingrese todos los numeros");
+          str = Serial.readString();
+          while (str.length() > 0){
+              int index = str.indexOf(' ');
+              if (index == -1) // No space found
+              {
+                strs[StringCount++] = str;
+                break;
+              }
+              else
+              {
+                strs[StringCount++] = str.substring(0, index);
+                str = str.substring(index+1);
+              }
+          }
+         for (int i = 0; i < StringCount; i++){
+            Enviar_msj(strs[i], "Algunas pastillas estan a punto de caducarse.");
+            delay(5000);
+          }
+         Serial.println("OK");
+         delay(1000);
+        }
+    }
+    cas1 = 1;
+    cas2 = 0;
+    alarmas = 'E';
+    }
+  break;
+  }
 }
 
 void Enviar_msj(String numero, String msj)
@@ -233,6 +278,9 @@ void Enviar_msj(String numero, String msj)
 
 bool transitionS6S0(){
   if(alarmas == 'E' && cas1 == 1){
+    String strs[20];
+    String str;
+    int StringCount = 0;
     numero = "";
     alarmas = '1'; 
     return true;
@@ -242,6 +290,9 @@ bool transitionS6S0(){
 
 bool transitionS6S4(){
   if(alarmas == 'E' && cas2 == 1){
+    String strs[20];
+    String str;
+    int StringCount = 0;
     numero = "";
     alarmas = '1'; 
     return true;

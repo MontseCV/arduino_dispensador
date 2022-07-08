@@ -5,7 +5,7 @@
 #include <SPI.h>
 #include <MFRC522.h>
 // RELAY
-#define RELAY_ON 0    
+#define RELAY_ON 0
 #define RELAY_OFF 1
 //NFC 
 #define RST_PIN  5    //Pin 5 para el reset del RC522
@@ -17,23 +17,22 @@ MFRC522 mfrc522(SS_PIN, RST_PIN); ///Creamos el objeto para el RC522
 MFRC522::MIFARE_Key key;
 MFRC522::StatusCode status;
 
-
 //variables generales
 const int STATE_DELAY = 1000;
 char input;
 String nom = "Arduino";
 
 //Variables motores
-const int dirPin = 9;
-const int stepPin = 8;
-const int dirPin2 = 7;
-const int stepPin2 = 6;
-const int switchArriba = 29; //2 
-const int switchAbajo = 30;  //3
-const int switchBase = 4; //4
-const int enableBase = 2;  //29
-const int enableCremallera = 3;  //30
-int valvula = 31;
+const int dirPin = 29;
+const int stepPin = 30;
+const int dirPin2 = 32;
+const int stepPin2 = 33;
+const int switchArriba = 9; //2 
+const int switchAbajo = 8;  //3
+const int switchBase = 12; //4
+const int enableBase = 34;  //29
+const int enableCremallera = 31;  //30
+int valvula = 25;
 int stepDelay = 10;
 int stepDelay2 = 15;
 const int boton = 28;
@@ -45,21 +44,22 @@ int cont = 0;
 int Pdispensadas;
 
 //Variables sensor de temperatura
-int sensor = 22; 
-int ventilador = 24; 
+int sensor = 22;
+int ventilador = 23;
 int temp, humedad;
 DHT dht (sensor, DHT11);
 
 //Variables solenoide y switch
-int solenoide = 25; 
-int switchPuerta = 26; 
+int solenoide = 24; 
+int switchPuerta = 35; 
 
 //Variables alarma
-int buzzer = 27;
+int buzzer = 26;
 int h = 0;
 char alarmas;
 int cas1 = 0;
 int cas2 = 0;
+
 
 //Declarar estados
 StateMachine machine = StateMachine();
